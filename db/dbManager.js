@@ -37,7 +37,7 @@ class DBManager {
                     employee.last_name, 
                     title, 
                     name as department, 
-                    employee.salary, 
+                    role.salary, 
                     CONCAT(manager.first_name, ' ', manager.last_name) as manager
                 FROM employee
                 LEFT JOIN role ON employee.role_id = role.id
