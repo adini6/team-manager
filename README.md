@@ -48,6 +48,10 @@ Navigate to the project directory via terminal and run:
 node index.js
 ```
 Follow the inquirer prompts to view, add, update, or delete records in your employee database.
+![Team manager](https://github.com/adini6/team-manager/assets/28551058/263fe055-3959-4706-9fa2-19f34b11c2a3)
+
+
+[walk through video](https://drive.google.com/file/d/1gtR8mV8Lw2Jgu-kGhQm4tY7Twf7yRH9e/view)
 
 ## Features
 
