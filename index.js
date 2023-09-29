@@ -64,7 +64,9 @@ const init = async () => {
                         { name: 'first_name', type: 'input', message: 'Enter employee first name:' },
                         { name: 'last_name', type: 'input', message: 'Enter employee last name:' },
                         { name: 'role_id', type: 'input', message: 'Enter role ID for the employee:' },
-                        { name: 'manager_id', type: 'input', message: 'Enter manager ID for the employee (Enter NULL if no manager):' }
+                        { name: 'manager_id', type: 'input', message: 'Enter manager ID for the employee (Enter NULL if no manager):' },
+                        { name: 'salary', type: 'input', message: 'Enter salary for the employee:' }
+
                     ]);
 
                     try {
@@ -72,7 +74,8 @@ const init = async () => {
                             employeeAnswers.first_name,
                             employeeAnswers.last_name,
                             parseInt(employeeAnswers.role_id),
-                            employeeAnswers.manager_id === 'NULL' ? null : parseInt(employeeAnswers.manager_id)
+                            employeeAnswers.manager_id === 'NULL' ? null : parseInt(employeeAnswers.manager_id),
+                            parseFloat(employeeAnswers.salary)
                         );
                         console.log(`Employee ${employeeAnswers.first_name} ${employeeAnswers.last_name} added successfully!`);
                     } catch (error) {

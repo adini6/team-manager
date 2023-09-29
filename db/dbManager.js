@@ -37,7 +37,7 @@ class DBManager {
                     employee.last_name, 
                     title, 
                     name as department, 
-                    salary, 
+                    employee.salary, 
                     CONCAT(manager.first_name, ' ', manager.last_name) as manager
                 FROM employee
                 LEFT JOIN role ON employee.role_id = role.id
@@ -75,10 +75,10 @@ class DBManager {
     }
 
     // Add a new employee
-    addEmployee(first_name, last_name, role_id, manager_id) {
+    addEmployee(first_name, last_name, role_id, manager_id, salary) {
         return new Promise((resolve, reject) => {
-            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
-            connection.query(query, [first_name, last_name, role_id, manager_id], (err, results) => {
+            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id,salary) VALUES (?, ?, ?, ?)';
+            connection.query(query, [first_name, last_name, role_id, manager_id,salary], (err, results) => {
                 if (err) reject(err);
                 resolve(results);
             });
