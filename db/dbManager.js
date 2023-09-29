@@ -31,10 +31,17 @@ class DBManager {
     getEmployees() {
         return new Promise((resolve, reject) => {
             const query = `
-                SELECT employee.id, first_name, last_name, title, name as department, salary, CONCAT(manager.first_name, ' ', manager.last_name) as manager 
-                FROM employee 
-                LEFT JOIN role ON employee.role_id = role.id 
-                LEFT JOIN department ON role.department_id = department.id 
+                SELECT 
+                    employee.id, 
+                    employee.first_name, 
+                    employee.last_name, 
+                    title, 
+                    name as department, 
+                    salary, 
+                    CONCAT(manager.first_name, ' ', manager.last_name) as manager
+                FROM employee
+                LEFT JOIN role ON employee.role_id = role.id
+                LEFT JOIN department ON role.department_id = department.id
                 LEFT JOIN employee manager ON employee.manager_id = manager.id;
             `;
             connection.query(query, (err, results) => {
@@ -43,6 +50,7 @@ class DBManager {
             });
         });
     }
+    
 
     // Add a new department
     addDepartment(name) {
