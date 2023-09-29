@@ -45,59 +45,89 @@ const init = async () => {
                     await dbManager.addDepartment(name);
                     console.log(`Department ${name} added successfully!`);
                     break;
-                    case "Add a role":
-                        const roleAnswers = await inquirer.prompt([
-                            { name: 'title', type: 'input', message: 'Enter role title:' },
-                            { name: 'salary', type: 'input', message: 'Enter role salary:' },
-                            { name: 'department_id', type: 'input', message: 'Enter department ID for the role (or enter a new one):' }
-                        ]);
-                    
-                        const title = roleAnswers.title;
-                        const salary = parseFloat(roleAnswers.salary);
-                        const departmentId = parseInt(roleAnswers.department_id);
-                    
-                        try {
-                            if (isNaN(departmentId)) {
-                                const { departmentName } = await inquirer.prompt({ name: 'departmentName', type: 'input', message: 'Enter the new department name:' });
-                                const newDepartment = await dbManager.addDepartment(departmentName);
-                                await dbManager.addRole(title, salary, newDepartment.insertId);
-                            } else {
-                                await dbManager.addRole(title, salary, departmentId);
-                            }
-                    
-                            console.log(`Role ${title} added successfully!`);
-                        } catch (error) {
-                            console.error('Error adding the new role:', error);
-                        }
-                        break;
-                    case "Add an employee":
-                        const employeeAnswers = await inquirer.prompt([
-                            { name: 'first_name', type: 'input', message: 'Enter employee first name:' },
-                            { name: 'last_name', type: 'input', message: 'Enter employee last name:' },
-                            { name: 'role_id', type: 'input', message: 'Enter role ID for the employee:' },
-                            { name: 'manager_id', type: 'input', message: 'Enter manager ID for the employee (Enter NULL if no manager):' }
-                        ]);
+                case "Add a role":
+                    const roleAnswers = await inquirer.prompt([
+                        { name: 'title', type: 'input', message: 'Enter role title:' },
+                        { name: 'salary', type: 'input', message: 'Enter role salary:' },
+                        { name: 'department_id', type: 'input', message: 'Enter department ID for the role:' }
+                    ]);
+
+                    try {
+                        await dbManager.addRole(roleAnswers.title, parseFloat(roleAnswers.salary), parseInt(roleAnswers.department_id));
+                        console.log(`Role ${roleAnswers.title} added successfully!`);
+                    } catch (error) {
+                        console.error('Error adding the new role:', error);
+                    }
+                    break;
+                case "Add an employee":
+                    const employeeAnswers = await inquirer.prompt([
+                        { name: 'first_name', type: 'input', message: 'Enter employee first name:' },
+                        { name: 'last_name', type: 'input', message: 'Enter employee last name:' },
+                        { name: 'role_id', type: 'input', message: 'Enter role ID for the employee:' },
+                        { name: 'manager_id', type: 'input', message: 'Enter manager ID for the employee (Enter NULL if no manager):' }
+                    ]);
+
+                    try {
                         await dbManager.addEmployee(
                             employeeAnswers.first_name,
                             employeeAnswers.last_name,
-                            employeeAnswers.role_id,
-                            employeeAnswers.manager_id === 'NULL' ? null : employeeAnswers.manager_id
+                            parseInt(employeeAnswers.role_id),
+                            employeeAnswers.manager_id === 'NULL' ? null : parseInt(employeeAnswers.manager_id)
                         );
-                    
                         console.log(`Employee ${employeeAnswers.first_name} ${employeeAnswers.last_name} added successfully!`);
-                        break;
-                    
+                    } catch (error) {
+                        console.error('Error adding the new employee:', error);
+                    }
+                    break;
                 case "Update a role's salary":
                     const { roleId, newSalary } = await inquirer.prompt([
                         { name: 'roleId', type: 'input', message: 'Enter the ID of the role you want to update:' },
                         { name: 'newSalary', type: 'input', message: 'Enter the new salary:' }
                     ]);
-                    await dbManager.updateRole(roleId, { salary: newSalary });
+                    await dbManager.updateRole(parseInt(roleId), { salary: parseFloat(newSalary) });
                     console.log('Role updated successfully!');
+                    break;
+                case "Delete a department":
+                    try {
+                        const { departmentId } = await inquirer.prompt({
+                            name: 'departmentId',
+                            type: 'input',
+                            message: 'Enter the ID of the department you want to delete:'
+                        });
+                        await dbManager.deleteRecord('department', parseInt(departmentId));
+                        console.log('Department deleted successfully!');
+                    } catch (error) {
+                        console.error('Error deleting department:', error);
+                    }
+                    break;
+                case "Delete a role":
+                    try {
+                        const { roleId } = await inquirer.prompt({
+                            name: 'roleId',
+                            type: 'input',
+                            message: 'Enter the ID of the role you want to delete:'
+                        });
+                        await dbManager.deleteRecord('role', parseInt(roleId));
+                        console.log('Role deleted successfully!');
+                    } catch (error) {
+                        console.error('Error deleting role:', error);
+                    }
+                    break;
+                case "Delete an employee":
+                    try {
+                        const { employeeId } = await inquirer.prompt({
+                            name: 'employeeId',
+                            type: 'input',
+                            message: 'Enter the ID of the employee you want to delete:'
+                        });
+                        await dbManager.deleteRecord('employee', parseInt(employeeId));
+                        console.log('Employee deleted successfully!');
+                    } catch (error) {
+                        console.error('Error deleting employee:', error);
+                    }
                     break;
                 default:
                     console.log("Invalid choice! Please choose a valid action.");
-                    
             }
         }
     } catch (error) {
