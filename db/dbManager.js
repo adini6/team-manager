@@ -16,7 +16,7 @@ class DBManager {
     getRoles() {
         return new Promise((resolve, reject) => {
             const query = `
-                SELECT role.id, title, salary, name as department 
+                SELECT role.id, title, name as department 
                 FROM role 
                 JOIN department ON role.department_id = department.id;
             `;
@@ -37,7 +37,7 @@ class DBManager {
                     employee.last_name, 
                     title, 
                     name as department, 
-                    role.salary, 
+                    employee.salary, 
                     CONCAT(manager.first_name, ' ', manager.last_name) as manager
                 FROM employee
                 LEFT JOIN role ON employee.role_id = role.id
@@ -64,20 +64,22 @@ class DBManager {
     }
 
     // Add a new role
-    addRole(title, salary, department_id) {
-        return new Promise((resolve, reject) => {
-            const query = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
-            connection.query(query, [title, salary, department_id], (err, results) => {
-                if (err) reject(err);
-                resolve(results);
-            });
+    addRole(title, department_id) {
+    return new Promise((resolve, reject) => {
+        const query = 'INSERT INTO role (title, department_id) VALUES (?, ?)';
+        connection.query(query, [title, department_id], (err, results) => {
+            if (err) reject(err);
+            resolve(results);
         });
+    });
     }
+
+    
 
     // Add a new employee
     addEmployee(first_name, last_name, role_id, manager_id, salary) {
         return new Promise((resolve, reject) => {
-            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id,salary) VALUES (?, ?, ?, ?)';
+            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id,salary) VALUES (?, ?, ?, ?, ?)';
             connection.query(query, [first_name, last_name, role_id, manager_id,salary], (err, results) => {
                 if (err) reject(err);
                 resolve(results);
@@ -98,14 +100,16 @@ class DBManager {
 
     // Delete a department, role, or employee
     deleteRecord(table, id) {
-        return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
+        try {
             const query = `DELETE FROM ${table} WHERE id = ?`;
-            connection.query(query, [id], (err, results) => {
-                if (err) reject(err);
-                resolve(results);
-            });
-        });
-    }
+            const [results] = await connection.promise().query(query, [id]);
+            resolve(results);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 
     // Close the database connection
     closeConnection() {

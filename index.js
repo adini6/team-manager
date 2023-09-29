@@ -48,12 +48,11 @@ const init = async () => {
                 case "Add a role":
                     const roleAnswers = await inquirer.prompt([
                         { name: 'title', type: 'input', message: 'Enter role title:' },
-                        { name: 'salary', type: 'input', message: 'Enter role salary:' },
                         { name: 'department_id', type: 'input', message: 'Enter department ID for the role:' }
                     ]);
 
                     try {
-                        await dbManager.addRole(roleAnswers.title, parseFloat(roleAnswers.salary), parseInt(roleAnswers.department_id));
+                        await dbManager.addRole(roleAnswers.title, parseInt(roleAnswers.department_id));
                         console.log(`Role ${roleAnswers.title} added successfully!`);
                     } catch (error) {
                         console.error('Error adding the new role:', error);
